@@ -1,6 +1,6 @@
-/* this contains all the function definitions for the grid system, if more fuctions are added here make sureto place the prototype in battlegrid.h or things may break.
+/* this contains all the function definitions for the grid system, if more fuctions are added here make sure to place the prototype in battlegrid.h or things may break.
 the header file is important here. there is alot of pointer use here to move data in and out of the functions to main.c 
-NOTE---> Variable are initilized in the fuctions not in the beginning of the file, variables and pointes in use are listed below for reference
+NOTE---> Variable are initialized in the fuctions not in the beginning of the file, variables and pointes in use are listed below for reference
 variable ---> description
 bg       ---> pointer
 i        --->  integer for row indexing
@@ -9,7 +9,7 @@ testgrid ---> for testing the read fuction
 MAX_GAME_ROWS---> defined in header
 MAX_GAME_COLS---> defined in header
 rowLabels --->  characters for row headers
-colLabels --->  charaters for column headers
+colLabels --->  characters for column headers
 MAX_VIS_ROWS ---> defined in header
 MAX_VIS_COLs ---> defined in header
 actualRow ---> The variable used to shift index placement between the reference grid and visual grid 
@@ -36,7 +36,7 @@ void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// In
         }
     }
     /* Purpose: Sets up the game logic grid with ships, hits, and misses from test grid.This should be able to be modified to work with the proper grid generation
-    * NOTE---> Still have to figure out ship size, as is every instace of 1 in the grid read counts as it's own ship, Maybe we could use this as a very hard mode with a large grid?
+    * NOTE---> Still have to figure out ship size, as is every instance of 1 in the grid read counts as it's own ship, Maybe we could use this as a very hard mode with a large grid?
     * The grid should scale based on size entered, I have not fully tested */
 }
 
@@ -69,8 +69,8 @@ void buildVisualGrid(BattleGrid* bg) {
     }
     /* Purpose: Builds a visual battlegrid with headers and initial fog - of - war(~). This will hide ships but will show hits and misses if present in the referenced array 
     regardless if it's freshly generated
-    Note---> this array will alway be 1 size bigger to make room for the header, we will have to change quite a few sections of code if we want to gammes bigger than 7x7
-    It's possible to add more charaters to display here if we do power ups or other extra features
+    Note---> this array will always be 1 size bigger to make room for the header, we will have to change quite a few sections of code if we want to games bigger than 7x7
+    It's possible to add more characters to display here if we do power ups or other extra features
     I do want to figure out if colors are possible still*/
 }
 
@@ -114,7 +114,7 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
         }
     }
     /* Purpose: Updates the visual and game grids based on the player's guess. 
-    Note---> this feels messy and I may of over complicated things by shifing grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
+    Note---> this feels messy and I may of over complicated things by shifting grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
     if we go over grids larger than 7x7*/
 }
 
