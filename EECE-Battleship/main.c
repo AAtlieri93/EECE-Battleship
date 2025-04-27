@@ -15,11 +15,45 @@ rowGuess ---> The variable used to hold the converted rowChar variable
 
 #define _CRT_SECURE_NO_WARNINGS // Do not remove, it makes my life easy :3
 #include <stdio.h> 
+#include <stdlib.h> // Used for random ship generation
+#include <string.h> // To read difficulty input
 #include "battlegrid.h" // Include the header for grid stucture and function prototypes
 
 int main() {
     BattleGrid gameGrid; // Create an instance of the BattleGrid structure to manage the game state
     int remainingTurns = 10; // Start with 10 turns for the player
+    char difficulty[8]; // Difficulty choice from player
+    int validDiff = 0; // Used to check if player input a valid difficulty
+
+    // Difficulty loop to make sure the player inputs a correct diffculty choice
+    while (validDiff == 0) {
+        printf("Choose your difficulty: Easy | Normal | Hard\n");
+        scanf("%s", difficulty);
+
+        if (strcmp(difficulty, "Easy") == 0 || strcmp(difficulty, "easy") == 0) { // Easy difficulty
+            printf("Easy difficulty chosen!\n"); // Tells player that they have succesfully chosen the easy difficulty
+            remainingTurns = 7; // 7 turns for easy mode
+            gameGrid.gameRows = 3; // 3 rows in the game grid
+            gameGrid.gameCols = 3; // 3 columns in the game grid
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else if (strcmp(difficulty, "Normal") == 0 || strcmp(difficulty, "normal") == 0) { // Normal difficulty
+            printf("Normal difficulty chosen!\n"); // Tells player that they have succesfully chosen the normal difficulty
+            remainingTurns = 13; // 13 turns for normal mode
+            gameGrid.gameRows = 5; // 5 rows in the game grid
+            gameGrid.gameCols = 5; // 5 columns in the game grid
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else if (strcmp(difficulty, "Hard") == 0 || strcmp(difficulty, "hard") == 0) { // Hard difficulty
+            printf("Hard difficulty chosen!\n"); // Tells player that they have succesfully chosen the hard difficulty
+            remainingTurns = 17; // 17 turns for hard mode
+            gameGrid.gameRows = 7; // 7 rows in the game grid
+            gameGrid.gameCols = 7; // 7 columns in the game grid
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else
+            printf("Invalid input, please try again.\n"); // Tells player that they did not input a valid difficulty and asks them to retry
+     }
 
     /* Define 5x5 test grid for gameplay(1 = ship, 2 = hit, 3 = miss, 0 = empty) NOTE--->haven't tested with a larger or smaller grid
     * BIG NOTE===> COMMENT THIS OUT DON'T ERASE.  this can be use for debugging, place random gen code above it  */
@@ -32,8 +66,6 @@ int main() {
     };
 
     // Initialize the grid dimensions based on the test grid size
-    gameGrid.gameRows = 5; // 5 rows in the game grid
-    gameGrid.gameCols = 5; // 5 columns in the game grid
     gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
     gameGrid.visCols = gameGrid.gameCols + 1; // Include 1 header column
 
