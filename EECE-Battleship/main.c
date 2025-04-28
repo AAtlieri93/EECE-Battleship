@@ -24,7 +24,12 @@ int main() {
     int remainingTurns = 10; // Start with 10 turns for the player
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
+    int seedVal; // Player input seed value
 
+    printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
+    scanf("%d", &seedVal); // Random seed value from player input
+    srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
+    
     // Difficulty loop to make sure the player inputs a correct diffculty choice
     while (validDiff == 0) {
         printf("Choose your difficulty: Easy | Normal | Hard\n");
@@ -64,6 +69,15 @@ int main() {
         {3, 0, 0, 1, 0}, // 
         {0, 2, 0, 0, 1}  // 
     };
+
+    int hor; // Defines if a ship is placed horizontally or verically
+    int valid = 0; // Used to see if a ship can be correctly placed
+
+    while (valid == 0) {
+        hor = rand() % 2; // Basically a coin flip for horizontal or verical
+
+        if (hor == 0) {
+            
 
     // Initialize the grid dimensions based on the test grid size
     gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
