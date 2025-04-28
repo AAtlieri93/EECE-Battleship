@@ -25,6 +25,8 @@ int main() {
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
     int seedVal; // Player input seed value
+    int diffSize; // Size of the array depending on the difficulty chosen
+    int shipAmount; // Amount of ships depending on the difficulty chosen
 
     printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
@@ -40,6 +42,8 @@ int main() {
             remainingTurns = 7; // 7 turns for easy mode
             gameGrid.gameRows = 3; // 3 rows in the game grid
             gameGrid.gameCols = 3; // 3 columns in the game grid
+            diffSize = 3; // Size 3
+            shipAmount = 2; // 2 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
         }
         else if (strcmp(difficulty, "Normal") == 0 || strcmp(difficulty, "normal") == 0) { // Normal difficulty
@@ -47,6 +51,8 @@ int main() {
             remainingTurns = 13; // 13 turns for normal mode
             gameGrid.gameRows = 5; // 5 rows in the game grid
             gameGrid.gameCols = 5; // 5 columns in the game grid
+            diffSize = 5; // Size 5
+            shipAmount = 3; // 3 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
         }
         else if (strcmp(difficulty, "Hard") == 0 || strcmp(difficulty, "hard") == 0) { // Hard difficulty
@@ -54,6 +60,8 @@ int main() {
             remainingTurns = 17; // 17 turns for hard mode
             gameGrid.gameRows = 7; // 7 rows in the game grid
             gameGrid.gameCols = 7; // 7 columns in the game grid
+            diffSize = 7; // Size 7
+            shipAmount = 5; // 5 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
         }
         else
@@ -72,11 +80,42 @@ int main() {
 
     int hor; // Defines if a ship is placed horizontally or verically
     int valid = 0; // Used to see if a ship can be correctly placed
+    int shipHead, shipTail; // Parts of the ship being generated
+    int i, k;
 
-    while (valid == 0) {
-        hor = rand() % 2; // Basically a coin flip for horizontal or verical
+    for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
+        while (valid == 0) {
+            hor = rand() % 2; // Basically a coin flip for horizontal or verical
 
-        if (hor == 0) {
+            shipHead = rand() % diffSize; // Randomized head position
+            shipTail = rand() % diffSize; // Randomized tail position
+
+            valid = 1; // Will validate a ship placement
+            for (i = 0; i < 2; ++i) { // For ship sizes of 2
+                if (hor == 0) { // If ship placement is horizontal
+                    if (shipTail + 1 == diffSize) { // If the tail of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
+                        valid = 0;
+                        break;
+                    }
+                }
+                else { // If ship placement is vertical
+                    if (shipHead + 1 == diffSize) { // If the head of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
+                        valid = 0;
+                        break;
+                    }
+                }
+            }
+            if (valid == 1) { // Will only place full ships if previous ship positions are valid
+                for (i = 0; i < 2; ++i) { // Ships of size 2
+                    if (hor == 0) // If ship placement is horizontal
+                        testGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
+                    else // If ship placement is vertical
+                        testGrid[shipHead + i][shipTail] = 1; // Places a verical ship
+                }
+            }
+        }
+        valid = 0; // Resets valid ship placement for the next ship
+    }
             
 
     // Initialize the grid dimensions based on the test grid size
