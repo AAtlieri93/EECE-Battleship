@@ -1,13 +1,13 @@
-/* This is the skeleton code I made for main.c it's was only for testing my fuctions but caould be repurposed for the actual framework for the finished code. I do recommend leaving parts not used 
-commented out if not used  until we are sure everything works.  Please note is may be buggy I did note test alot of differnet cases using this code and... forgot to put something in incase a lowercase letter is entered 
+/* This is the skeleton code I made for main.c it's was only for testing my fuctions but caould be repurposed for the actual framework for the finished code. I do recommend leaving parts not used
+commented out if not used  until we are sure everything works.  Please note is may be buggy I did note test alot of differnet cases using this code and... forgot to put something in incase a lowercase letter is entered
 for a target guess.
-Variables in use below 
+Variables in use below
 variable ---> description
 gameGrid  ---> structure creation
 remainingTurns ---> int for number of rounds (temporary until set by difficulty or user)
 testGrid ---> array for testing
-rowChar  ---> player input for row charater 
-colGuess ---> player input for column 
+rowChar  ---> player input for row charater
+colGuess ---> player input for column
 rowGuess ---> The variable used to hold the converted rowChar variable
 */
 
@@ -19,8 +19,10 @@ rowGuess ---> The variable used to hold the converted rowChar variable
 #include <string.h> // To read difficulty input
 #include "battlegrid.h" // Include the header for grid stucture and function prototypes
 
+BattleGrid gameGrid = { 0 }; // Initializes structure members to zero 
+
 int main() {
-    BattleGrid gameGrid; // Create an instance of the BattleGrid structure to manage the game state
+    BattleGrid gameGrid = { 0 }; // Create an instance of the BattleGrid structure to manage the game state
     int remainingTurns = 10; // Start with 10 turns for the player
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
@@ -31,14 +33,9 @@ int main() {
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
     srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
-=======
-    //printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
-    //scanf("%d", &seedVal); // Random seed value from player input
-    //srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
->>>>>>> Update Battlegrid.c
-    
+
     // Difficulty loop to make sure the player inputs a correct diffculty choice
-    while (validDiff == 0) {
+    /*while (validDiff == 0) {
         printf("Choose your difficulty: Easy | Normal | Hard\n");
         scanf("%s", difficulty);
 
@@ -72,15 +69,16 @@ int main() {
         else
             printf("Invalid input, please try again.\n"); // Tells player that they did not input a valid difficulty and asks them to retry
      }
+     */
 
-    /* Define 5x5 test grid for gameplay(1 = ship, 2 = hit, 3 = miss, 0 = empty) NOTE--->haven't tested with a larger or smaller grid
-    * BIG NOTE===> COMMENT THIS OUT DON'T ERASE.  this can be use for debugging, place random gen code above it  */
+     /* Define 5x5 test grid for gameplay(1 = ship, 2 = hit, 3 = miss, 0 = empty) NOTE--->haven't tested with a larger or smaller grid
+     * BIG NOTE===> COMMENT THIS OUT DON'T ERASE.  this can be use for debugging, place random gen code above it  */
     int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS] = {
-        {1, 0, 0, 0, 0}, // place values here to change test grid 
-        {0, 1, 0, 3, 0}, // ships will always remain hidden ( hopefully) until end of game
-        {0, 0, 1, 0, 0}, // misses and hits will show right away if placed here
-        {3, 0, 0, 1, 0}, // 
-        {0, 2, 0, 0, 1}  // 
+        {0, 0, 0, 0, 0}, // place values here to change test grid 
+        {0, 0, 0, 0, 0}, // ships will always remain hidden ( hopefully) until end of game
+        {0, 0, 0, 0, 0}, // misses and hits will show right away if placed here
+        {0, 0, 0, 0, 0}, // 
+        {0, 0, 0, 0, 0}  // 
     };
 
     /*int hor; // Defines if a ship is placed horizontally or verically
@@ -88,7 +86,7 @@ int main() {
     int shipHead, shipTail; // Parts of the ship being generated
     int i, k;
 
-    for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
+    /*for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
         while (valid == 0) {
             hor = rand() % 2; // Basically a coin flip for horizontal or verical
 
@@ -121,16 +119,19 @@ int main() {
         }
         valid = 0; // Resets valid ship placement for the next ship
     }
-<<<<<<< HEAD
-    */        
+
+    */
 
 
     // Initialize the grid dimensions based on the test grid size
-    gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
-    gameGrid.visCols = gameGrid.gameCols + 1; // Include 1 header column
+    //gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
+    //gameGrid.visCols = gameGrid.gameCols + 1; // Include 1 header column
 
     // Call to the readGrid fuction using the test grid NOTE---> replace test grid with generated grid
     readGrid(&gameGrid, testGrid);
+    gameGrid.visRows = gameGrid.gameRows + 1; // NEW  moved to after the read grid fuction
+    gameGrid.visCols = gameGrid.gameCols + 1;
+
 
     // Calling Function to build the visual grid with fog-of-war (~)
     buildVisualGrid(&gameGrid);
@@ -149,8 +150,8 @@ int main() {
 
         // Convert the row letter (e.g., 'A') to a numeric index
         int rowGuess = rowChar - 'A' + 1; // 'A' maps to 1, 'B' maps to 2, etc. ( playing with the integer values for ASCII charater )
-        /*NOTE--->An example on how this works: For 'A' the ASCII int value is 65 for 'B' the int value is 66 
-        * So if rowChar = 'B' then what us happening is 'B' - 'A' + 1 = 2 which is  66 - 65 + 1 = 2*/  
+        /*NOTE--->An example on how this works: For 'A' the ASCII int value is 65 for 'B' the int value is 66
+        * So if rowChar = 'B' then what us happening is 'B' - 'A' + 1 = 2 which is  66 - 65 + 1 = 2*/
 
         // Validate the player's input
         if (rowGuess < 1 || rowGuess > gameGrid.gameRows || colGuess < 1 || colGuess > gameGrid.gameCols) {
@@ -166,5 +167,5 @@ int main() {
         printGrid(&gameGrid);
     }
 
-    return 0; 
+    return 0;
 }
