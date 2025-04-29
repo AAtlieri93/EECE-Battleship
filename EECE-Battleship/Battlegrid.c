@@ -125,10 +125,10 @@ void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// In
             }
             if (checkShip == 1) { // Will only run if this is a new ship
               if (testGrid[i][j] == 1 && testGrid[i][j+1] == 1) { // Checks if it's a vertical ship
-                bg -> remainingships++; // Increments ship count by 1
+                bg -> remainingShips++; // Increments ship count by 1
               }
               else if (testGrid[i][j] == 1 && testGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
-                bg -> remainingships++; // Increments ship count by 1
+                bg -> remainingShips++; // Increments ship count by 1
               }
             }
         checkShip = 1; // Resets valid ship position for next ship count iteration
