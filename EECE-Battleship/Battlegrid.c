@@ -18,23 +18,128 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 
 
 #define _CRT_SECURE_NO_WARNINGS // Do not remove, it makes my life easy :3
-#include <stdio.h> 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "battlegrid.h" // Include the header file for battlegrid structure and function prototypes
 
 
 void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
     bg->maxTurns = 10;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
+    char difficulty[8]; // Difficulty choice from player
+    int validDiff = 0; // Used to check if player input a valid difficulty
+    int seedVal; // Player input seed value
+    int diffSize; // Size of the array depending on the difficulty chosen
+    int shipAmount; // Amount of ships depending on the difficulty chosen
 
-    // Copying the test grid into the reference grid and count ships
-    for (int i = 0; i < bg->gameRows; i++) { // Loop through the game rows
-        for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
-            bg->referenceGrid[i][j] = testGrid[i][j]; // Copy each cell value from testGrid
-            if (testGrid[i][j] == 1) { // Check if the cell contains a ship (value 1)
-                bg->remainingShips++;  // adding to ship value--->  this will have to be adjusted, right now the fuction sees every 1 as a ship, not that every ship has a size
+    printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
+    scanf("%d", &seedVal); // Random seed value from player input
+    srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
+    
+    // Difficulty loop to make sure the player inputs a correct diffculty choice
+    while (validDiff == 0) {
+        printf("Choose your difficulty: Easy | Normal | Hard\n");
+        scanf("%s", difficulty);
+
+        if (strcmp(difficulty, "Easy") == 0 || strcmp(difficulty, "easy") == 0) { // Easy difficulty
+            printf("Easy difficulty chosen!\n"); // Tells player that they have succesfully chosen the easy difficulty
+            remainingTurns = 7; // 7 turns for easy mode
+            gameGrid.gameRows = 3; // 3 rows in the game grid
+            gameGrid.gameCols = 3; // 3 columns in the game grid
+            diffSize = 3; // Size 3
+            shipAmount = 2; // 2 Ships
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else if (strcmp(difficulty, "Normal") == 0 || strcmp(difficulty, "normal") == 0) { // Normal difficulty
+            printf("Normal difficulty chosen!\n"); // Tells player that they have succesfully chosen the normal difficulty
+            remainingTurns = 13; // 13 turns for normal mode
+            gameGrid.gameRows = 5; // 5 rows in the game grid
+            gameGrid.gameCols = 5; // 5 columns in the game grid
+            diffSize = 5; // Size 5
+            shipAmount = 3; // 3 Ships
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else if (strcmp(difficulty, "Hard") == 0 || strcmp(difficulty, "hard") == 0) { // Hard difficulty
+            printf("Hard difficulty chosen!\n"); // Tells player that they have succesfully chosen the hard difficulty
+            remainingTurns = 17; // 17 turns for hard mode
+            gameGrid.gameRows = 7; // 7 rows in the game grid
+            gameGrid.gameCols = 7; // 7 columns in the game grid
+            diffSize = 7; // Size 7
+            shipAmount = 5; // 5 Ships
+            validDiff = 1; // Breaks out of "choose difficulty" loop
+        }
+        else
+            printf("Invalid input, please try again.\n"); // Tells player that they did not input a valid difficulty and asks them to retry
+     }
+    int hor; // Defines if a ship is placed horizontally or verically
+    int valid = 0; // Used to see if a ship can be correctly placed
+    int shipHead, shipTail; // Parts of the ship being generated
+    int i, k;
+
+    for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
+        while (valid == 0) {
+            hor = rand() % 2; // Basically a coin flip for horizontal or verical
+
+            shipHead = rand() % diffSize; // Randomized head position
+            shipTail = rand() % diffSize; // Randomized tail position
+
+            valid = 1; // Will validate a ship placement
+            for (i = 0; i < 2; ++i) { // For ship sizes of 2
+                if (hor == 0) { // If ship placement is horizontal
+                    if (shipTail + 1 == diffSize) { // If the tail of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
+                        valid = 0;
+                        break;
+                    }
+                }
+                else { // If ship placement is vertical
+                    if (shipHead + 1 == diffSize) { // If the head of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
+                        valid = 0;
+                        break;
+                    }
+                }
+            }
+            if (valid == 1) { // Will only place full ships if previous ship positions are valid
+                for (i = 0; i < 2; ++i) { // Ships of size 2
+                    if (hor == 0) // If ship placement is horizontal
+                        testGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
+                    else // If ship placement is vertical
+                        testGrid[shipHead + i][shipTail] = 1; // Places a verical ship
+                }
             }
         }
+        valid = 0; // Resets valid ship placement for the next ship
     }
+    /* Essentially how this piece of code works is that it checks if the ship placement will be horizontal or vertical, and then will see
+    if the second part of the ship exceeds the grid size or if it collides with an existing ship. If so, the code will fail and will be
+    forced to retry another ship position, constantly retying until it can place a valid ship that does not collide with the grid limits and
+    existing ships, and it will continue to do this until all ships are placed.
+    */
+    int checkShip = 1; // Will be used to check for correct ship placement
+    // Copying the test grid into the reference grid and count ships
+    for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
+        for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
+            bg->referenceGrid[i][j] = testGrid[i][j]; // Copy each cell value from testGrid
+            if ((testGrid[i][j] == 1 && testGrid[i][j - 1]) || (testGrid[i][j] == 1 && testGrid[i - 1][j])) { // Check if the cell before or above has a ship position
+                checkShip = 0; // Will invalidate this position as the start of a new ship
+            }
+            if (checkShip == 1) { // Will only run if this is a new ship
+              if (testGrid[i][j] == 1 && testGrid[i][j+1] == 1) { // Checks if it's a vertical ship
+                bg -> remainingships++; // Increments ship count by 1
+              }
+              else if (testGrid[i][j] == 1 && testGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
+                bg -> remainingships++; // Increments ship count by 1
+              }
+            }
+        checkShip = 1; // Resets valid ship position for next ship count iteration
+        }
+    }
+    /* Function: The code will go through row by row, column by column, and if it finds a ship position, it will first check if a ship has already been counted
+    from that spot, since all secondary parts of the ships are generated either leftwards (if horizontal) or downwards (if vertical). So if a "1" is detected above
+    or to the left of that ship, the code will say that particular ship position has already been accounted for and the code should not increment the ship count.
+    If there are no "1" to the top or left of that position, the code will first check if it's a vertical ship. If so, increment the ship count by 1. If not, then
+    the code will check if it's a horizontal ship instead, and if so, increment ship count by 1.
+    */
     /* Purpose: Sets up the game logic grid with ships, hits, and misses from test grid.This should be able to be modified to work with the proper grid generation
     * NOTE---> Still have to figure out ship size, as is every instance of 1 in the grid read counts as it's own ship, Maybe we could use this as a very hard mode with a large grid?
     * The grid should scale based on size entered, I have not fully tested */
