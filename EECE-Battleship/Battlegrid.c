@@ -17,7 +17,13 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 */
 
 
+
 #define _CRT_SECURE_NO_WARNINGS // Do not remove, it makes my life easy :3
+#define red     "\x1b[31m"
+#define green   "\x1b[32m"
+#define blue    "\x1b[34m"
+#define revert  "\x1b[0m"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -26,7 +32,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 
 void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
-    bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
+   // bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
     int seedVal; // Player input seed value
@@ -181,33 +187,37 @@ void buildVisualGrid(BattleGrid* bg) {
 
 // function to update the grid based on player guesses 
 void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remainingTurns) {
+
     // Validate input coordinates (guesses starting at 1)
+    // Convert player input to battle grid coordinates (starting at 0)
+    int actualRow = rowGuess - 1; // Adjust row index
+    int actualCol = colGuess - 1; // Adjust column index
     if (rowGuess < 1 || rowGuess > bg->gameRows || colGuess < 1 || colGuess > bg->gameCols) {
         printf("Invalid coordinates! Please enter a valid row and column.\n");
         return; // Exit the function if input is invalid maybe a good idea to have the this loop instead of exit, will fix later 
     }
 
-    if (bg->referenceGrid[actualRow][actualCol] != 0 || bg->referenceGrid[actualRow][actualCol] != 1) {
+    if (bg->referenceGrid[actualRow][actualCol] != 0 && bg->referenceGrid[actualRow][actualCol] != 1) {
         printf("Already guessed this coordinate! Please try a different row and column.\n");
         return; // Exit the function if input is a previously guessed coordinate
     }
 
-    // Convert player input to battle grid coordinates (starting at 0)
-    int actualRow = rowGuess - 1; // Adjust row index
-    int actualCol = colGuess - 1; // Adjust column index
+
 
     // Check the cell in the grid
     if (bg->referenceGrid[actualRow][actualCol] == 1) { // If there's a ship
         printf("Hit!\n");
         bg->visualGrid[actualRow + 1][actualCol + 1] = 'O'; // Mark hit in the visual grid Note---> due to the header we have to shift the charater change over
         bg->referenceGrid[actualRow][actualCol] = 2; // Update the battle grid to reflect the hit
+        
     }
     else { // If no ship is present
         printf("Miss!\n");
         bg->visualGrid[actualRow + 1][actualCol + 1] = 'X'; // Mark miss in the visual grid Note---> due to the header we have to shift the charater change over
         bg->referenceGrid[actualRow][actualCol] = 3; // Update the battle grid to reflect the miss
+       
     }
-
+    (*remainingTurns)--;
     // Check is a ship has been sunk
     int i, j;
 
@@ -225,34 +235,50 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
                 bg->referenceGrid[i][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship
                 bg->referenceGrid[i + 1][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship (second part)
             }
-    
-    // Decrement remaining turns
-    (*remainingTurns)--;
+        }
+        
+        
 
-    // End the game and reveal all ships when turns run out
-    if (*remainingTurns == 0) {
-        printf("Game over! Revealing all remaining ships...\n");
-        for (i = 0; i < bg->gameRows; i++) { // Loop through game rows
-            for (j = 0; j < bg->gameCols; j++) { // Loop through game columns
-                if (bg->referenceGrid[i][j] == 1) { // If there's still a ship
-                    bg->visualGrid[i + 1][j + 1] = 'S'; // Reveal ship on the visual grid, + 1 to change the correct charater 
+        // End the game and reveal all ships when turns run out
+        if (*remainingTurns == 0) {
+            printf("Game over! Revealing all remaining ships...\n");
+            for (i = 0; i < bg->gameRows; i++) { // Loop through game rows
+                for (j = 0; j < bg->gameCols; j++) { // Loop through game columns
+                    if (bg->referenceGrid[i][j] == 1) { // If there's still a ship
+                        bg->visualGrid[i + 1][j + 1] = 'S'; // Reveal ship on the visual grid, + 1 to change the correct charater 
+                    }
                 }
             }
         }
+        /* Purpose: Updates the visual and game grids based on the player's guess.
+        Note---> this feels messy and I may of over complicated things by shifting grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
+        if we go over grids larger than 7x7*/
     }
-    /* Purpose: Updates the visual and game grids based on the player's guess. 
-    Note---> this feels messy and I may of over complicated things by shifting grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
-    if we go over grids larger than 7x7*/
 }
-
 // Function to Print the visual battle grid
 void printGrid(BattleGrid* bg) {
     for (int i = 0; i < bg->visRows; i++) { // Loop through visual grid rows
         for (int j = 0; j < bg->visCols; j++) { // Loop through visual grid columns
-            printf("%c ", bg->visualGrid[i][j]); // Print each cell
+            char cell = bg->visualGrid[i][j];
+
+            // Apply color based on cell type
+            if (cell == '~') {
+                printf(blue "%c " revert, cell);  // Fog of war (blue)
+            }
+            else if (cell == 'O') {
+                printf(green "%c " revert, cell);   // Hit (red)
+            }
+            else if (cell == 'X') {
+                printf(red "%c " revert, cell); // Miss (yellow)
+            }
+            else {
+                printf("%c ", cell);  // Default color
+            }
         }
         printf("\n"); // Move to the next row
     }
+}
+
     /* Purpose: Prints the visual grid to the console, showing fog - of - war, hits, misses, and headers.
     * Note---> May be the simplest function*/
-}
+

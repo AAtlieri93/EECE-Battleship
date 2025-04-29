@@ -23,12 +23,13 @@ BattleGrid gameGrid = { 0 }; // Initializes structure members to zero
 
 int main() {
     BattleGrid gameGrid = { 0 }; // Create an instance of the BattleGrid structure to manage the game state
-    int remainingTurns = 10; // Start with 10 turns for the player
+    int maxTurns ; // Start with 10 turns for the player
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
     int seedVal; // Player input seed value
     int diffSize; // Size of the array depending on the difficulty chosen
     int shipAmount; // Amount of ships depending on the difficulty chosen
+    int RemainingTurns = gameGrid.maxTurns;
 
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
@@ -140,12 +141,13 @@ int main() {
     printGrid(&gameGrid);
 
     // Main game loop test: continues until turns run out or all ships are sunk
-    while (remainingTurns > 0 && gameGrid.remainingShips > 0) {
+    while (gameGrid.maxTurns > 0 && gameGrid.remainingShips > 0) {
         char rowChar; // Player's input for the row (e.g., 'A', 'B', 'C')
         int colGuess; // Player's input for the column (e.g., 1, 2, 3)
 
         // Prompt the player for input
-        printf("Enter row and column (e.g., A 1): tries left: %d\n", remainingTurns);
+        printf("Enter row and column (e.g., A 1): tries left: %d\n", gameGrid.maxTurns);
+        printf("ship count %d\n", gameGrid.remainingShips);
         scanf(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
 
         // Convert the row letter (e.g., 'A') to a numeric index
@@ -161,7 +163,7 @@ int main() {
         }
 
         // Call to the function to update the grid based on the player's guess
-        updateVisualGrid(&gameGrid, rowGuess, colGuess, &remainingTurns);
+        updateVisualGrid(&gameGrid, rowGuess, colGuess, &gameGrid.maxTurns);
 
         // Call to the function display the updated grid after the guess
         printGrid(&gameGrid);
