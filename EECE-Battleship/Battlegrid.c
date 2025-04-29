@@ -44,27 +44,27 @@ void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// In
 
         if (strcmp(difficulty, "Easy") == 0 || strcmp(difficulty, "easy") == 0) { // Easy difficulty
             printf("Easy difficulty chosen!\n"); // Tells player that they have succesfully chosen the easy difficulty
-            remainingTurns = 7; // 7 turns for easy mode
-            gameGrid.gameRows = 3; // 3 rows in the game grid
-            gameGrid.gameCols = 3; // 3 columns in the game grid
+            bg->maxTurns = 7; // 7 turns for easy mode
+            bg->gameRows = 3; // 3 rows in the game grid
+            bg->gameCols = 3; // 3 columns in the game grid
             diffSize = 3; // Size 3
             shipAmount = 2; // 2 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
         }
         else if (strcmp(difficulty, "Normal") == 0 || strcmp(difficulty, "normal") == 0) { // Normal difficulty
             printf("Normal difficulty chosen!\n"); // Tells player that they have succesfully chosen the normal difficulty
-            remainingTurns = 13; // 13 turns for normal mode
-            gameGrid.gameRows = 5; // 5 rows in the game grid
-            gameGrid.gameCols = 5; // 5 columns in the game grid
+            bg->maxTurns = 13; // 13 turns for normal mode
+            bg->gameRows = 5; // 5 rows in the game grid
+            bg->gameCols = 5; // 5 columns in the game grid
             diffSize = 5; // Size 5
             shipAmount = 3; // 3 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
         }
         else if (strcmp(difficulty, "Hard") == 0 || strcmp(difficulty, "hard") == 0) { // Hard difficulty
             printf("Hard difficulty chosen!\n"); // Tells player that they have succesfully chosen the hard difficulty
-            remainingTurns = 17; // 17 turns for hard mode
-            gameGrid.gameRows = 7; // 7 rows in the game grid
-            gameGrid.gameCols = 7; // 7 columns in the game grid
+            bg->maxTurns = 17; // 17 turns for hard mode
+            bg->gameRows = 7; // 7 rows in the game grid
+            bg->gameCols = 7; // 7 columns in the game grid
             diffSize = 7; // Size 7
             shipAmount = 5; // 5 Ships
             validDiff = 1; // Breaks out of "choose difficulty" loop
