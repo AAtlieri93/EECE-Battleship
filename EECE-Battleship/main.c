@@ -19,7 +19,7 @@ rowGuess ---> The variable used to hold the converted rowChar variable
 #include <string.h> // To read difficulty input
 #include "battlegrid.h" // Include the header for grid stucture and function prototypes
 
-BattleGrid gameGrid = { 0 }; // Initializes structure members to zero 
+BattleGrid gameGrid = { 0 }; // Initializes structure members to zero  
 
 int main() {
     BattleGrid gameGrid = { 0 }; // Create an instance of the BattleGrid structure to manage the game state
@@ -145,7 +145,7 @@ int main() {
         int colGuess; // Player's input for the column (e.g., 1, 2, 3)
 
         // Prompt the player for input
-        printf("Enter row and column (e.g., A 1): ");
+        printf("Enter row and column (e.g., A 1): tries left: %d\n", remainingTurns);
         scanf(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
 
         // Convert the row letter (e.g., 'A') to a numeric index
