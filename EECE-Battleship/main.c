@@ -28,7 +28,7 @@ int main() {
     int diffSize; // Size of the array depending on the difficulty chosen
     int shipAmount; // Amount of ships depending on the difficulty chosen
 
-    printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
+    /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
     srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
     
@@ -78,7 +78,7 @@ int main() {
         {0, 2, 0, 0, 1}  // 
     };
 
-    int hor; // Defines if a ship is placed horizontally or verically
+    /*int hor; // Defines if a ship is placed horizontally or verically
     int valid = 0; // Used to see if a ship can be correctly placed
     int shipHead, shipTail; // Parts of the ship being generated
     int i, k;
@@ -116,7 +116,7 @@ int main() {
         }
         valid = 0; // Resets valid ship placement for the next ship
     }
-            
+    */        
 
     // Initialize the grid dimensions based on the test grid size
     gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
