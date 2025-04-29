@@ -31,6 +31,11 @@ int main() {
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
     srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
+=======
+    //printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
+    //scanf("%d", &seedVal); // Random seed value from player input
+    //srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
+>>>>>>> Update Battlegrid.c
     
     // Difficulty loop to make sure the player inputs a correct diffculty choice
     while (validDiff == 0) {
@@ -116,7 +121,9 @@ int main() {
         }
         valid = 0; // Resets valid ship placement for the next ship
     }
+<<<<<<< HEAD
     */        
+
 
     // Initialize the grid dimensions based on the test grid size
     gameGrid.visRows = gameGrid.gameRows + 1; // Include 1 header row
