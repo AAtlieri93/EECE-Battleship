@@ -128,7 +128,7 @@ int main() {
     //gameGrid.visCols = gameGrid.gameCols + 1; // Include 1 header column
 
     // Call to the readGrid fuction using the test grid NOTE---> replace test grid with generated grid
-    readGrid(&gameGrid, testGrid);
+    setupGrid(&gameGrid, testGrid);
     gameGrid.visRows = gameGrid.gameRows + 1; // NEW  moved to after the read grid fuction
     gameGrid.visCols = gameGrid.gameCols + 1;
 

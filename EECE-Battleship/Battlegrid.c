@@ -24,7 +24,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 #include "battlegrid.h" // Include the header file for battlegrid structure and function prototypes
 
 
-void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
+void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
     bg->maxTurns = 10;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
@@ -117,23 +117,35 @@ void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// In
     */
     int checkShip = 1; // Will be used to check for correct ship placement
     // Copying the test grid into the reference grid and count ships
+    bg->remainingShips = 0;
     for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
         for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
             bg->referenceGrid[i][j] = testGrid[i][j]; // Copy each cell value from testGrid
-            if ((testGrid[i][j] == 1 && testGrid[i][j - 1]) || (testGrid[i][j] == 1 && testGrid[i - 1][j])) { // Check if the cell before or above has a ship position
-                checkShip = 0; // Will invalidate this position as the start of a new ship
+        //     if ((testGrid[i][j] == 1 && testGrid[i][j - 1]) || (testGrid[i][j] == 1 && testGrid[i - 1][j])) { // Check if the cell before or above has a ship position
+        //         checkShip = 0; // Will invalidate this position as the start of a new ship
+        //     }
+        //     if (checkShip == 1) { // Will only run if this is a new ship
+        //       if (testGrid[i][j] == 1 && testGrid[i][j+1] == 1) { // Checks if it's a vertical ship
+        //         bg -> remainingShips++; // Increments ship count by 1
+        //       }
+        //       else if (testGrid[i][j] == 1 && testGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
+        //         bg -> remainingShips++; // Increments ship count by 1
+        //       }
+        //     }
+        // checkShip = 1; // Resets valid ship position for next ship count iteration
+        
+            // we're counting all the squares with a ship in it so we can subtract
+            // one from this figure each time we hit a ship.
+            for (int j = 0; j < bg->gameCols; ++j) {
+                if (bg->referenceGrid[i][j] != 0) {
+                    bg->remainingShips++;
+                }
             }
-            if (checkShip == 1) { // Will only run if this is a new ship
-              if (testGrid[i][j] == 1 && testGrid[i][j+1] == 1) { // Checks if it's a vertical ship
-                bg -> remainingShips++; // Increments ship count by 1
-              }
-              else if (testGrid[i][j] == 1 && testGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
-                bg -> remainingShips++; // Increments ship count by 1
-              }
-            }
-        checkShip = 1; // Resets valid ship position for next ship count iteration
         }
     }
+
+
+
     /* Function: The code will go through row by row, column by column, and if it finds a ship position, it will first check if a ship has already been counted
     from that spot, since all secondary parts of the ships are generated either leftwards (if horizontal) or downwards (if vertical). So if a "1" is detected above
     or to the left of that ship, the code will say that particular ship position has already been accounted for and the code should not increment the ship count.
@@ -217,6 +229,10 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
                 }
             }
         }
+    }
+
+    if(bg->remainingShips <= 0) {
+        printf("You won! That was all of them.\n");
     }
     /* Purpose: Updates the visual and game grids based on the player's guess. 
     Note---> this feels messy and I may of over complicated things by shifting grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
