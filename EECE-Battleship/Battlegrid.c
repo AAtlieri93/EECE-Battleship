@@ -26,7 +26,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 
 void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
-    bg->maxTurns = 10;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
+    bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
     int seedVal; // Player input seed value
@@ -187,6 +187,11 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
         return; // Exit the function if input is invalid maybe a good idea to have the this loop instead of exit, will fix later 
     }
 
+    if (bg->referenceGrid[actualRow][actualCol] != 0 || bg->referenceGrid[actualRow][actualCol] != 1) {
+        printf("Already guessed this coordinate! Please try a different row and column.\n");
+        return; // Exit the function if input is a previously guessed coordinate
+    }
+
     // Convert player input to battle grid coordinates (starting at 0)
     int actualRow = rowGuess - 1; // Adjust row index
     int actualCol = colGuess - 1; // Adjust column index
@@ -196,7 +201,6 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
         printf("Hit!\n");
         bg->visualGrid[actualRow + 1][actualCol + 1] = 'O'; // Mark hit in the visual grid Note---> due to the header we have to shift the charater change over
         bg->referenceGrid[actualRow][actualCol] = 2; // Update the battle grid to reflect the hit
-        bg->remainingShips--; // Reduce the ship count
     }
     else { // If no ship is present
         printf("Miss!\n");
@@ -204,14 +208,32 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
         bg->referenceGrid[actualRow][actualCol] = 3; // Update the battle grid to reflect the miss
     }
 
+    // Check is a ship has been sunk
+    int i, j;
+
+    for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
+        for (j = 0; j < bg->gameCols; j++) { // Loop through the game columns
+            if (bg->referenceGrid[i][j] == 2 && bg->referenceGrid[i][j + 1] == 2) { // Checks if there is a vertical ship that has been sunk
+                printf("A ship has been sunk!\n"); // Tells player that they've sunk a ship
+                bg->remainingShips--; // Reduce the ship count
+                bg->referenceGrid[i][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship
+                bg->referenceGrid[i][j + 1] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship (second part)
+            }
+            else if (bg->referenceGrid[i][j] == 2 && bg->referenceGrid[i + 1][j] == 2) { // Checks if there is a horizontal ship that has been sunk
+                printf("A ship has been sunk!\n"); // Tells player that they've sunk a ship
+                bg->remainingShips--; // Reduce the ship count
+                bg->referenceGrid[i][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship
+                bg->referenceGrid[i + 1][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship (second part)
+            }
+    
     // Decrement remaining turns
     (*remainingTurns)--;
 
     // End the game and reveal all ships when turns run out
     if (*remainingTurns == 0) {
         printf("Game over! Revealing all remaining ships...\n");
-        for (int i = 0; i < bg->gameRows; i++) { // Loop through game rows
-            for (int j = 0; j < bg->gameCols; j++) { // Loop through game columns
+        for (i = 0; i < bg->gameRows; i++) { // Loop through game rows
+            for (j = 0; j < bg->gameCols; j++) { // Loop through game columns
                 if (bg->referenceGrid[i][j] == 1) { // If there's still a ship
                     bg->visualGrid[i + 1][j + 1] = 'S'; // Reveal ship on the visual grid, + 1 to change the correct charater 
                 }
