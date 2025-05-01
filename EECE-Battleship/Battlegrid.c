@@ -30,7 +30,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 #include "battlegrid.h" // Include the header file for battlegrid structure and function prototypes
 
 
-void readGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
+void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
    // bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
