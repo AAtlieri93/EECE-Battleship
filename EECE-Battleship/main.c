@@ -30,6 +30,7 @@ int main() {
     int diffSize; // Size of the array depending on the difficulty chosen
     int shipAmount; // Amount of ships depending on the difficulty chosen
     int RemainingTurns = gameGrid.maxTurns;
+    int hintUsed = 0; // Flag to track if player used a hint
 
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
