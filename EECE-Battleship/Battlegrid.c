@@ -126,7 +126,7 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
     for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
         for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
             bg->referenceGrid[i][j] = testGrid[i][j]; // Copy each cell value from testGrid
-            if ((testGrid[i][j] == 1 && testGrid[i][j - 1]) || (testGrid[i][j] == 1 && testGrid[i - 1][j])) { // Check if the cell before or above has a ship position
+            if ((testGrid[i][j] == 1 && testGrid[i][j - 1] == 1) || (testGrid[i][j] == 1 && testGrid[i - 1][j] == 1)) { // Check if the cell before or above has a ship position
                 checkShip = 0; // Will invalidate this position as the start of a new ship
             }
             if (checkShip == 1) { // Will only run if this is a new ship
