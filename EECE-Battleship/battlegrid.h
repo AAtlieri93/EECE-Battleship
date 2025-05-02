@@ -26,4 +26,5 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]); // C
 void buildVisualGrid(BattleGrid* bg); // Creates the fog-of-war display grid
 void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remainingTurns); // Updates the grid based on the player's guess
 void printGrid(BattleGrid* bg); // Prints the visual grid 
+void giveHint(BattleGrid* bg); // Displays one hidden ship coordinate
 #endif
