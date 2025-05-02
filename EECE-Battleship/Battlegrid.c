@@ -98,7 +98,7 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
                         break;
                     }
                 }
-                else if (testGrid[shipHead][shipTail] == 1 || testGrid[shipHead][shipTail + 1] == 1 || testGrid[shipHead + 1][shipTail]) {
+                else if (testGrid[shipHead][shipTail] == 1 || testGrid[shipHead][shipTail + 1] == 1 || testGrid[shipHead + 1][shipTail] == 1) {
                         valid = 0;
                         break;
                 }
