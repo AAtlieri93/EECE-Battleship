@@ -30,7 +30,6 @@ int main() {
     int diffSize; // Size of the array depending on the difficulty chosen
     int shipAmount; // Amount of ships depending on the difficulty chosen
     int RemainingTurns = gameGrid.maxTurns;
-    int hintUsed = 0; // Flag to track if player used a hint
 
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
@@ -147,9 +146,34 @@ int main() {
         int colGuess; // Player's input for the column (e.g., 1, 2, 3)
 
         // Prompt the player for input
-        printf("Enter row and column (e.g., A 1): tries left: %d\n", gameGrid.maxTurns);
+        printf("Enter row and column (e.g., A 1) or type 'Get hint': tries left: %d\n", gameGrid.maxTurns);
         printf("ship count %d\n", gameGrid.remainingShips);
         scanf(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
+        fgets(input, sizeof(input), stdin); // Read full input line (supports 'Get hint')
+
+        input[strcspn(input, "\n")] = 0; // Removes new lines
+
+        if (strcmp(input, "Get hint") == 0 || strcmp(input, "get hint") == 0) {
+            if (hintUsed == 0) {
+                giveHint(&gameGrid); // Call hint function
+                hintUsed = 1; // Set flag to prevent further use
+            } else {
+                printf("Hint already used! You only get one!\n");
+            }
+            continue; // Skip turn cost if player uses hint
+        }
+
+        
+        // Parse input as coordinate guess
+        if (sscanf(input, " %c %d", &rowChar, &colGuess) != 2) { // Input format validation
+            printf("Invalid input format! Please enter like 'A 1' or 'Get hint'.\n");
+            continue; // Restart loop for a valid input
+        }
+
+        // Handle lowercase letters
+        if (rowChar >= 'a' && rowChar <= 'z') {
+            rowChar -= 32; // Convert to uppercase by subtracting 32 from ASCII value
+        }
 
         // Convert the row letter (e.g., 'A') to a numeric index
         int rowGuess = rowChar - 'A' + 1; // 'A' maps to 1, 'B' maps to 2, etc. ( playing with the integer values for ASCII charater )
