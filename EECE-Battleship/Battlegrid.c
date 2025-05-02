@@ -283,6 +283,25 @@ void printGrid(BattleGrid* bg) {
     }
 }
 
+
+void giveHint(BattleGrid* bg) {
+    int i, j;
+    int found = 0;
+
+    for (i = 0; i < bg->gameRows && !found; i++) {
+        for (j = 0; j < bg->gameCols && !found; j++) {
+            // Look for a hidden ship (not hit yet)
+            if (bg->referenceGrid[i][j] == 1) {
+                printf("Hint: There is a ship at %c%d\n", 'A' + i, j + 1);
+                found = 1;
+            }
+        }
+    }
+
+    if (!found) {
+        printf("No ships left to give a hint for!\n");
+    }
+}
     /* Purpose: Prints the visual grid to the console, showing fog - of - war, hits, misses, and headers.
     * Note---> May be the simplest function*/
 
