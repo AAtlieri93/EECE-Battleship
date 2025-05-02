@@ -107,7 +107,7 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
                         valid = 0;
                         break;
                     }
-                }
+                } printf("hor %d shiphead %d ship tail %d \n",hor, shipHead, shipTail);
             }
             if (valid == 1) { // Will only place full ships if previous ship positions are valid
                 for (i = 0; i < 2; ++i) { // Ships of size 2
