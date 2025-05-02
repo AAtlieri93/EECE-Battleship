@@ -22,7 +22,7 @@ typedef struct {
 } BattleGrid; // name of structure
 
 // Function prototypes (declared here for use in other files)
-void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]); // Copies a predefined test grid into the reference grid
+void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]); // Copies a predefined test grid into the reference grid
 void buildVisualGrid(BattleGrid* bg); // Creates the fog-of-war display grid
 void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remainingTurns); // Updates the grid based on the player's guess
 void printGrid(BattleGrid* bg); // Prints the visual grid 

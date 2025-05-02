@@ -5,7 +5,7 @@ Variables in use below
 variable ---> description
 gameGrid  ---> structure creation
 remainingTurns ---> int for number of rounds (temporary until set by difficulty or user)
-testGrid ---> array for testing
+arrayGrid ---> array for testing
 rowChar  ---> player input for row charater
 colGuess ---> player input for column
 rowGuess ---> The variable used to hold the converted rowChar variable
@@ -76,7 +76,7 @@ int main() {
 
      /* Define 5x5 test grid for gameplay(1 = ship, 2 = hit, 3 = miss, 0 = empty) NOTE--->haven't tested with a larger or smaller grid
      * BIG NOTE===> COMMENT THIS OUT DON'T ERASE.  this can be use for debugging, place random gen code above it  */
-    int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS] = {
+    int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS] = {
         {0, 0, 0, 0, 0}, // place values here to change test grid 
         {0, 0, 0, 0, 0}, // ships will always remain hidden ( hopefully) until end of game
         {0, 0, 0, 0, 0}, // misses and hits will show right away if placed here
@@ -114,9 +114,9 @@ int main() {
             if (valid == 1) { // Will only place full ships if previous ship positions are valid
                 for (i = 0; i < 2; ++i) { // Ships of size 2
                     if (hor == 0) // If ship placement is horizontal
-                        testGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
+                        arrayGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
                     else // If ship placement is vertical
-                        testGrid[shipHead + i][shipTail] = 1; // Places a verical ship
+                        arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
                 }
             }
         }
@@ -131,7 +131,7 @@ int main() {
     //gameGrid.visCols = gameGrid.gameCols + 1; // Include 1 header column
 
     // Call to the setupGrid fuction using the test grid NOTE---> replace test grid with generated grid
-    setupGrid(&gameGrid, testGrid);
+    setupGrid(&gameGrid, arrayGrid);
     gameGrid.visRows = gameGrid.gameRows + 1; // NEW  moved to after the read grid fuction
     gameGrid.visCols = gameGrid.gameCols + 1;
 

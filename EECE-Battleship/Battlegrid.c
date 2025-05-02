@@ -30,7 +30,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 #include "battlegrid.h" // Include the header file for battlegrid structure and function prototypes
 
 
-void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
+void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
    // bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
@@ -98,7 +98,7 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
                         break;
                     }
                 }
-                else if (testGrid[shipHead][shipTail] == 1 || testGrid[shipHead][shipTail + 1] == 1 || testGrid[shipHead + 1][shipTail] == 1) {
+                else if (arrayGrid[shipHead][shipTail] == 1 || arrayGrid[shipHead][shipTail + 1] == 1 || arrayGrid[shipHead + 1][shipTail] == 1) {
                         valid = 0;
                         break;
                 }
@@ -112,9 +112,9 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
             if (valid == 1) { // Will only place full ships if previous ship positions are valid
                 for (i = 0; i < 2; ++i) { // Ships of size 2
                     if (hor == 0) // If ship placement is horizontal
-                        testGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
+                        arrayGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
                     else // If ship placement is vertical
-                        testGrid[shipHead + i][shipTail] = 1; // Places a verical ship
+                        arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
                 }
             }
         }
@@ -129,15 +129,15 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
     // Copying the test grid into the reference grid and count ships
     for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
         for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
-            bg->referenceGrid[i][j] = testGrid[i][j]; // Copy each cell value from testGrid
-            if ((testGrid[i][j] == 1 && testGrid[i][j - 1] == 1) || (testGrid[i][j] == 1 && testGrid[i - 1][j] == 1)) { // Check if the cell before or above has a ship position
+            bg->referenceGrid[i][j] = arrayGrid[i][j]; // Copy each cell value from arrayGrid
+            if ((arrayGrid[i][j] == 1 && arrayGrid[i][j - 1] == 1) || (arrayGrid[i][j] == 1 && arrayGrid[i - 1][j] == 1)) { // Check if the cell before or above has a ship position
                 checkShip = 0; // Will invalidate this position as the start of a new ship
             }
             if (checkShip == 1) { // Will only run if this is a new ship
-              if (testGrid[i][j] == 1 && testGrid[i][j+1] == 1) { // Checks if it's a vertical ship
+              if (arrayGrid[i][j] == 1 && arrayGrid[i][j+1] == 1) { // Checks if it's a vertical ship
                 bg -> remainingShips++; // Increments ship count by 1
               }
-              else if (testGrid[i][j] == 1 && testGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
+              else if (arrayGrid[i][j] == 1 && arrayGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
                 bg -> remainingShips++; // Increments ship count by 1
               }
             }
@@ -175,7 +175,7 @@ void buildVisualGrid(BattleGrid* bg) {
                 // Map each cell of the generated grid to the ASCII symbol, NOTE I believe color probably goes here, I just want it working 
                 switch (bg->referenceGrid[i - 1][j - 1]) { // Adjusting for headers since the 2D visual grid is one power larger, stops Headers from being over written and also going out of range
                 case 0: bg->visualGrid[i][j] = '~'; break; // Empty cell, fog of war
-                case 1: bg->visualGrid[i][j] = '~'; break; // Hidden ship, fog of war
+                case 1: bg->visualGrid[i][j] = 's'; break; // Hidden ship, fog of war
                 case 2: bg->visualGrid[i][j] = 'O'; break; // Hit
                 case 3: bg->visualGrid[i][j] = 'X'; break; // Miss
                 }
