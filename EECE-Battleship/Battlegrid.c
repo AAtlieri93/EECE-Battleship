@@ -98,6 +98,10 @@ void setupGrid(BattleGrid* bg, int testGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// I
                         break;
                     }
                 }
+                else if (testGrid[shipHead][shipTail] == 1 || testGrid[shipHead][shipTail + 1] == 1 || testGrid[shipHead + 1][shipTail]) {
+                        valid = 0;
+                        break;
+                }
                 else { // If ship placement is vertical
                     if (shipHead + 1 == diffSize) { // If the head of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
                         valid = 0;
