@@ -31,6 +31,7 @@ int main() {
     int shipAmount; // Amount of ships depending on the difficulty chosen
     int RemainingTurns = gameGrid.maxTurns;
     int hintUsed = 0; // Keeps track of hints
+    char input[50]; // Buffer for user input
 
     /*printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
     scanf("%d", &seedVal); // Random seed value from player input
