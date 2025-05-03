@@ -1,5 +1,10 @@
-/*  main.c  
-
+/* Authors:  Alaa Aitelgareh, Anthony Altieri, Calvin Chen 
+* Project: Battleship
+* Class: EECE 2160
+* Date 5/2/2025
+* V1.0
+main.c  
+This is the game of battleship, it features random ship generation, difficulty selection, and a graphical grid layout with colors 
 
 Variables in use below
 variable ---> description

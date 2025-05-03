@@ -1,4 +1,9 @@
-/* this contains all the function definitions for the grid system, if more fuctions are added here make sure to place the prototype in battlegrid.h or things may break.
+/* Authors:  Alaa Aitelgareh, Anthony Altieri, Calvin Chen 
+* Project: Battleship
+* Class: EECE 2160
+* Date 5/2/2025
+* V1.0
+This contains all the function definitions for the grid system, if more fuctions are added here make sure to place the prototype in battlegrid.h or things may break.
 the header file is important here. there is alot of pointer use here to move data in and out of the functions to main.c 
 NOTE---> Variable are initialized in the fuctions not in the beginning of the file, variables and pointes in use are listed below for reference
 variable ---> description

@@ -1,4 +1,9 @@
-/*This is the header filer, this defines the structure for the Battlegrid as well as any function prototypes for what exists in Battlegrid.c
+/*Authors:  Alaa Aitelgareh, Anthony Altieri, Calvin Chen 
+* Project: Battleship
+* Class: EECE 2160
+* Date 5/2/2025
+* V1.0
+This is the header filer, this defines the structure for the Battlegrid as well as any function prototypes for what exists in Battlegrid.c
 more can be added here if they relate to grid mechanics just to keep things neat*/
 #ifndef BATTLEGRID_H
 #define BATTLEGRID_H
