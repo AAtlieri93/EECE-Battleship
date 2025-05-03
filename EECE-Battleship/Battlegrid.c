@@ -82,43 +82,55 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
     int valid = 0; // Used to see if a ship can be correctly placed
     int shipHead, shipTail; // Parts of the ship being generated
     int i, k;
-
+    int attempts = 0; //tracker for failed placement
+    
+    
     for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
-        while (valid == 0) {
+        while (valid == 0 &&  attempts < 100) {
             hor = rand() % 2; // Basically a coin flip for horizontal or verical
 
             shipHead = rand() % diffSize; // Randomized head position
             shipTail = rand() % diffSize; // Randomized tail position
+            
 
             valid = 1; // Will validate a ship placement
             for (i = 0; i < 2; ++i) { // For ship sizes of 2
-                if (hor == 0) { // If ship placement is horizontal
-                    if (shipTail + 1 == diffSize) { // If the tail of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
-                        valid = 0;
-                        break;
+                if (hor == 0) { // If ship placement is horizontal 
+                    if (shipTail + i >= diffSize || arrayGrid[shipHead][shipTail + i] == 1) {
+                         valid = 0;
+                         break;
+
                     }
                 }
-                else if (arrayGrid[shipHead][shipTail] == 1 || arrayGrid[shipHead][shipTail + 1] == 1 || arrayGrid[shipHead + 1][shipTail] == 1) {
-                        valid = 0;
-                        break;
-                }
-                else { // If ship placement is vertical
-                    if (shipHead + 1 == diffSize) { // If the head of the ship is out of bounds of the map size, it will invalidate the ship placement and try again
-                        valid = 0;
-                        break;
+                
+                else {  // Vertical placement
+                    if (shipHead + i >= diffSize || arrayGrid[shipHead + i][shipTail] == 1) {
+                       valid = 0;
+                       break;
+
                     }
-                } printf("hor %d shiphead %d ship tail %d \n",hor, shipHead, shipTail);
+                } 
             }
-            if (valid == 1) { // Will only place full ships if previous ship positions are valid
-                for (i = 0; i < 2; ++i) { // Ships of size 2
-                    if (hor == 0) // If ship placement is horizontal
+            attempts++;  // Count placement retries
+            if (attempts >= 100) {
+                printf("Warning: Ship placement failed after many attempts! Adjust grid size or ship count.\n");
+                break;  // Exit loop if too many failures
+            }
+            if (valid == 0) {
+                continue;  // This makes the loop retry a new placement immediately
+            }
+
+            for (i = 0; i < 2; ++i) { // Ships of size 2
+                if (hor == 0) // If ship placement is horizontal
                         arrayGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
-                    else // If ship placement is vertical
+                else // If ship placement is vertical
                         arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
                 }
             }
+            valid = 0; // Resets valid ship placement for the next ship
+            attempts = 0;  //attempt reset
         }
-        valid = 0; // Resets valid ship placement for the next ship
+        
     }
     /* Essentially how this piece of code works is that it checks if the ship placement will be horizontal or vertical, and then will see
     if the second part of the ship exceeds the grid size or if it collides with an existing ship. If so, the code will fail and will be
@@ -127,7 +139,7 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
     */
     int checkShip = 1; // Will be used to check for correct ship placement
     // Copying the test grid into the reference grid and count ships
-    for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
+    for (int i = 0; i < bg->gameRows; i++) { // Loop through the game rows
         for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
             bg->referenceGrid[i][j] = arrayGrid[i][j]; // Copy each cell value from arrayGrid
             if ((arrayGrid[i][j] == 1 && arrayGrid[i][j - 1] == 1) || (arrayGrid[i][j] == 1 && arrayGrid[i - 1][j] == 1)) { // Check if the cell before or above has a ship position
