@@ -92,6 +92,9 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
             shipHead = rand() % diffSize; // Randomized head position
             shipTail = rand() % diffSize; // Randomized tail position
             
+            if (shipHead >= MAX_GAME_ROWS || shipTail >= MAX_GAME_COLS) {
+                printf("Error: Ship placement out of bounds!\n");
+                continue;  // Retry placement
 
             valid = 1; // Will validate a ship placement
             for (i = 0; i < 2; ++i) { // For ship sizes of 2
@@ -126,7 +129,7 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
                 else // If ship placement is vertical
                         arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
                 }
-            }
+            }printf("attempts: %d\n", attempts);
             valid = 0; // Resets valid ship placement for the next ship
             attempts = 0;  //attempt reset
         }
