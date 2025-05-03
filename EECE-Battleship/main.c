@@ -70,6 +70,12 @@ int main() {
         printf("Enter row and column (e.g., A 1) or type 'Get hint': tries left: %d\n", gameGrid.maxTurns);
         //printf("ship count %d\n", gameGrid.remainingShips);
         //(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
+        
+        int c;
+        while (( c = getchar()) != '\n' && c != EOF) {// FIX:  stops invalid format error from printing automaticly
+            ; // discard characters until a newline 
+        }
+
         fgets(input, sizeof(input), stdin); // Read full input line (supports 'Get hint')
 
         input[strcspn(input, "\n")] = 0; // Removes new lines
@@ -86,7 +92,7 @@ int main() {
 
         
         // Parse input as coordinate guess
-        if (sscanf(input, " %c %d", &rowChar, &colGuess) != 2) { // Input format validation
+        if (sscanf(input, "%c %d", &rowChar, &colGuess) != 2) { // Input format validation
             printf("Invalid input format! Please enter like 'A 1' or 'Get hint'.\n");
             continue; // Restart loop for a valid input
         }
