@@ -150,7 +150,7 @@ int main() {
         // Prompt the player for input
         printf("Enter row and column (e.g., A 1) or type 'Get hint': tries left: %d\n", gameGrid.maxTurns);
         printf("ship count %d\n", gameGrid.remainingShips);
-        scanf(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
+        //(" %c %d", &rowChar, &colGuess); // Read the row letter and column number
         fgets(input, sizeof(input), stdin); // Read full input line (supports 'Get hint')
 
         input[strcspn(input, "\n")] = 0; // Removes new lines
