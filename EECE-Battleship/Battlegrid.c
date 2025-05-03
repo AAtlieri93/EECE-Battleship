@@ -5,7 +5,7 @@ variable ---> description
 bg       ---> pointer
 i        --->  integer for row indexing
 j        --->   integer for column indexing
-testgrid ---> for testing the read fuction
+arrayGrid ---> for testing the read fuction
 MAX_GAME_ROWS---> defined in header
 MAX_GAME_COLS---> defined in header
 rowLabels --->  characters for row headers
@@ -18,7 +18,7 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 
 
 
-#define _CRT_SECURE_NO_WARNINGS // Do not remove, it makes my life easy :3
+#define _CRT_SECURE_NO_WARNINGS 
 #define red     "\x1b[31m"
 #define green   "\x1b[32m"
 #define blue    "\x1b[34m"
@@ -30,19 +30,28 @@ actualCol ---> Same as above but just for columns (sorry in advance if these are
 #include "battlegrid.h" // Include the header file for battlegrid structure and function prototypes
 
 
-void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// Initializing the core function to read generated grids (ships, hits, misses) currently using test grid in main.c
+void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {
+    // Initializing the core function to read generated grids (ships, hits, misses)
+    // currently using test grid in main.c
     bg->remainingShips = 0;  // Start by setting the number of ships to 0
-   // bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
+    // bg->maxTurns;       // Set the maximum number of turns allowed ------> this can be changed or pulled from main instead, placed here for testing 
     char difficulty[8]; // Difficulty choice from player
     int validDiff = 0; // Used to check if player input a valid difficulty
     int seedVal; // Player input seed value
     int diffSize; // Size of the array depending on the difficulty chosen
     int shipAmount; // Amount of ships depending on the difficulty chosen
 
-    printf("Welcome to Battleship! Please enter a number for your random Battleship map: \n"); // Asks player to enter a number for RNG
-    scanf("%d", &seedVal); // Random seed value from player input
-    srand(seedVal); // Generated psuedo-random values for RNG factors in the game production
-    
+    do {
+        printf("Welcome to Battleship! Please enter a 5 digit number for your random Battleship map: \n");  // Asks player to enter a number for RNG
+        scanf("%d", &seedVal);  // Random seed value from player input
+        if (seedVal < 10000) {  // Check if the number is less than 5 digits
+            printf("Error: You must enter a 5 digit number or more. Please try again.\n");
+        }
+    } while (seedVal < 10000);
+
+    srand(seedVal);  // Generated pseudo-random values for RNG factors in the game production
+
+
     // Difficulty loop to make sure the player inputs a correct diffculty choice
     while (validDiff == 0) {
         printf("Choose your difficulty: Easy | Normal | Hard\n");
@@ -77,46 +86,47 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
         }
         else
             printf("Invalid input, please try again.\n"); // Tells player that they did not input a valid difficulty and asks them to retry
-     }
+    }
     int hor; // Defines if a ship is placed horizontally or verically
     int valid = 0; // Used to see if a ship can be correctly placed
     int shipHead, shipTail; // Parts of the ship being generated
     int i, k;
     int attempts = 0; //tracker for failed placement
-    
-    
+
     for (k = 0; k < shipAmount; ++k) { // Will reiterate until all ships have been placed
-        while (valid == 0 &&  attempts < 100) {
+        while (valid == 0 && attempts < 100) {
             hor = rand() % 2; // Basically a coin flip for horizontal or verical
 
             shipHead = rand() % diffSize; // Randomized head position
             shipTail = rand() % diffSize; // Randomized tail position
-            
-            if (shipHead >= MAX_GAME_ROWS || shipTail >= MAX_GAME_COLS) {
-                printf("Error: Ship placement out of bounds!\n");
-                continue;  // Retry placement
 
             valid = 1; // Will validate a ship placement
+
+            // Fix: Bound checking before proceeding with placement
+            if (shipHead >= MAX_GAME_ROWS || shipTail >= MAX_GAME_COLS) {
+                //printf("Error: Ship placement out of bounds!\n");
+                valid = 0; // Mark placement as invalid
+                attempts++; // Count the failed attempt
+                continue;  // Retry placement
+            }
+
             for (i = 0; i < 2; ++i) { // For ship sizes of 2
                 if (hor == 0) { // If ship placement is horizontal 
                     if (shipTail + i >= diffSize || arrayGrid[shipHead][shipTail + i] == 1) {
-                         valid = 0;
-                         break;
-
+                        valid = 0;
+                        break;
                     }
                 }
-                
                 else {  // Vertical placement
                     if (shipHead + i >= diffSize || arrayGrid[shipHead + i][shipTail] == 1) {
-                       valid = 0;
-                       break;
-
+                        valid = 0;
+                        break;
                     }
-                } 
+                }
             }
             attempts++;  // Count placement retries
             if (attempts >= 100) {
-                printf("Warning: Ship placement failed after many attempts! Adjust grid size or ship count.\n");
+                //printf("Warning: Ship placement failed after many attempts! Adjust grid size or ship count.\n");
                 break;  // Exit loop if too many failures
             }
             if (valid == 0) {
@@ -125,38 +135,53 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
 
             for (i = 0; i < 2; ++i) { // Ships of size 2
                 if (hor == 0) // If ship placement is horizontal
-                        arrayGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
+                    arrayGrid[shipHead][shipTail + i] = 1; // Places a horizontal ship
                 else // If ship placement is vertical
-                        arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
-                }
-            }printf("attempts: %d\n", attempts);
-            valid = 0; // Resets valid ship placement for the next ship
-            attempts = 0;  //attempt reset
+                    arrayGrid[shipHead + i][shipTail] = 1; // Places a verical ship
+            }
+            //printf("attempts: %d\n", attempts);// troubleshooting for missing ships 
+            // FIX: Break out of the while loop when a valid placement is achieved so that only one ship is placed per iteration of k.
+            break;
         }
-        
+        // Reset valid and attempts for the next ship placement.
+        valid = 0;
+        attempts = 0;
     }
     /* Essentially how this piece of code works is that it checks if the ship placement will be horizontal or vertical, and then will see
     if the second part of the ship exceeds the grid size or if it collides with an existing ship. If so, the code will fail and will be
     forced to retry another ship position, constantly retying until it can place a valid ship that does not collide with the grid limits and
     existing ships, and it will continue to do this until all ships are placed.
     */
+
+    /* --- Ship Counting Section --- */
+    // The following code copies the arrayGrid into the referenceGrid and counts each ship.
+    // A ship (of size 2) should only be counted once. We treat a cell as the start of a ship if the cell to its left and the cell above are not ships.
     int checkShip = 1; // Will be used to check for correct ship placement
     // Copying the test grid into the reference grid and count ships
     for (int i = 0; i < bg->gameRows; i++) { // Loop through the game rows
         for (int j = 0; j < bg->gameCols; j++) { // Loop through the game columns
             bg->referenceGrid[i][j] = arrayGrid[i][j]; // Copy each cell value from arrayGrid
-            if ((arrayGrid[i][j] == 1 && arrayGrid[i][j - 1] == 1) || (arrayGrid[i][j] == 1 && arrayGrid[i - 1][j] == 1)) { // Check if the cell before or above has a ship position
-                checkShip = 0; // Will invalidate this position as the start of a new ship
+
+            // Only proceed if this cell is a ship cell.
+            if (arrayGrid[i][j] == 1) {
+                int isNewShip = 1;
+                // Check if the cell to the left is part of a ship (if within bounds)
+                if (j > 0 && arrayGrid[i][j - 1] == 1)
+                    isNewShip = 0;
+                // Check if the cell above is part of a ship (if within bounds)
+                if (i > 0 && arrayGrid[i - 1][j] == 1)
+                    isNewShip = 0;
+                if (isNewShip) {
+                    // Check horizontal adjaceny
+                    if ((j + 1) < bg->gameCols && arrayGrid[i][j + 1] == 1) {
+                        bg->remainingShips++; // Increments ship count by 1
+                    }
+                    // Else, check vertical adjacency
+                    else if ((i + 1) < bg->gameRows && arrayGrid[i + 1][j] == 1) {
+                        bg->remainingShips++; // Increments ship count by 1
+                    }
+                }
             }
-            if (checkShip == 1) { // Will only run if this is a new ship
-              if (arrayGrid[i][j] == 1 && arrayGrid[i][j+1] == 1) { // Checks if it's a vertical ship
-                bg -> remainingShips++; // Increments ship count by 1
-              }
-              else if (arrayGrid[i][j] == 1 && arrayGrid[i+1][j] == 1) { // Checks if it's a horizontal ship
-                bg -> remainingShips++; // Increments ship count by 1
-              }
-            }
-        checkShip = 1; // Resets valid ship position for next ship count iteration
         }
     }
     /* Function: The code will go through row by row, column by column, and if it finds a ship position, it will first check if a ship has already been counted
@@ -170,8 +195,8 @@ void setupGrid(BattleGrid* bg, int arrayGrid[MAX_GAME_ROWS][MAX_GAME_COLS]) {// 
     * The grid should scale based on size entered, I have not fully tested */
 }
 
-/* Function to build the visual grid(includes headers, hides ships with in fog of war) 
-Note--->I have not figured out colors yet but if there is time and when the rest of the game works I may add it in*/
+/* Function to build the visual grid(includes headers, hides ships with in fog of war)
+Note--->I have not figured out colors yet but if there is time and when the rest of the game works I may add it in */
 void buildVisualGrid(BattleGrid* bg) {
     // Defining labels for rows ('A'-'G') and columns ('1'-'7') If we go bigger then 7x7 this will have to be changed
     char rowLabels[MAX_VIS_ROWS] = { ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G' }; // Row headers
@@ -190,14 +215,14 @@ void buildVisualGrid(BattleGrid* bg) {
                 // Map each cell of the generated grid to the ASCII symbol, NOTE I believe color probably goes here, I just want it working 
                 switch (bg->referenceGrid[i - 1][j - 1]) { // Adjusting for headers since the 2D visual grid is one power larger, stops Headers from being over written and also going out of range
                 case 0: bg->visualGrid[i][j] = '~'; break; // Empty cell, fog of war
-                case 1: bg->visualGrid[i][j] = 's'; break; // Hidden ship, fog of war
+                case 1: bg->visualGrid[i][j] = '~'; break; // Hidden ship, fog of war
                 case 2: bg->visualGrid[i][j] = 'O'; break; // Hit
                 case 3: bg->visualGrid[i][j] = 'X'; break; // Miss
                 }
             }
         }
     }
-    /* Purpose: Builds a visual battlegrid with headers and initial fog - of - war(~). This will hide ships but will show hits and misses if present in the referenced array 
+    /* Purpose: Builds a visual battlegrid with headers and initial fog - of - war(~). This will hide ships but will show hits and misses if present in the referenced array
     regardless if it's freshly generated
     Note---> this array will always be 1 size bigger to make room for the header, we will have to change quite a few sections of code if we want to games bigger than 7x7
     It's possible to add more characters to display here if we do power ups or other extra features
@@ -206,7 +231,6 @@ void buildVisualGrid(BattleGrid* bg) {
 
 // function to update the grid based on player guesses 
 void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remainingTurns) {
-
     // Validate input coordinates (guesses starting at 1)
     // Convert player input to battle grid coordinates (starting at 0)
     int actualRow = rowGuess - 1; // Adjust row index
@@ -221,20 +245,18 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
         return; // Exit the function if input is a previously guessed coordinate
     }
 
-
-
     // Check the cell in the grid
     if (bg->referenceGrid[actualRow][actualCol] == 1) { // If there's a ship
         printf("Hit!\n");
         bg->visualGrid[actualRow + 1][actualCol + 1] = 'O'; // Mark hit in the visual grid Note---> due to the header we have to shift the charater change over
         bg->referenceGrid[actualRow][actualCol] = 2; // Update the battle grid to reflect the hit
-        
+
     }
     else { // If no ship is present
         printf("Miss!\n");
         bg->visualGrid[actualRow + 1][actualCol + 1] = 'X'; // Mark miss in the visual grid Note---> due to the header we have to shift the charater change over
         bg->referenceGrid[actualRow][actualCol] = 3; // Update the battle grid to reflect the miss
-       
+
     }
     (*remainingTurns)--;
     // Check is a ship has been sunk
@@ -255,8 +277,6 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
                 bg->referenceGrid[i + 1][j] = 4; // Makes sure this loop code doesn't repeat counting an already sunk ship (second part)
             }
         }
-        
-        
 
         // End the game and reveal all ships when turns run out
         if (*remainingTurns == 0) {
@@ -269,11 +289,26 @@ void updateVisualGrid(BattleGrid* bg, int rowGuess, int colGuess, int* remaining
                 }
             }
         }
+        // Check if all ships have been sunk.
+    // If so, compute the number of misses and print a game over message.
+        if (bg->remainingShips == 0) {
+            int missCount = 0;
+            for (i = 0; i < bg->gameRows; i++) { // Loop through the game rows
+                for (j = 0; j < bg->gameCols; j++) { // Loop through the game columns
+                    if (bg->referenceGrid[i][j] == 3) { // Cell marked as a miss
+                        missCount++;
+                    }
+                }
+            }
+            printf("Game Over! All ships sunk! You had %d misses.\n", missCount);
+        }
+
         /* Purpose: Updates the visual and game grids based on the player's guess.
         Note---> this feels messy and I may of over complicated things by shifting grid sizes between the test case and visual grid but it seems to work, I do feel if thigs break this is where it may happen
         if we go over grids larger than 7x7*/
     }
 }
+
 // Function to Print the visual battle grid
 void printGrid(BattleGrid* bg) {
     for (int i = 0; i < bg->visRows; i++) { // Loop through visual grid rows
@@ -285,10 +320,10 @@ void printGrid(BattleGrid* bg) {
                 printf(blue "%c " revert, cell);  // Fog of war (blue)
             }
             else if (cell == 'O') {
-                printf(green "%c " revert, cell);   // Hit (red)
+                printf(green "%c " revert, cell);   // Hit (green)
             }
             else if (cell == 'X') {
-                printf(red "%c " revert, cell); // Miss (yellow)
+                printf(red "%c " revert, cell); // Miss (red)
             }
             else {
                 printf("%c ", cell);  // Default color
@@ -297,7 +332,6 @@ void printGrid(BattleGrid* bg) {
         printf("\n"); // Move to the next row
     }
 }
-
 
 void giveHint(BattleGrid* bg) {
     int i, j;
@@ -317,6 +351,6 @@ void giveHint(BattleGrid* bg) {
         printf("No ships left to give a hint for!\n");
     }
 }
-    /* Purpose: Prints the visual grid to the console, showing fog - of - war, hits, misses, and headers.
-    * Note---> May be the simplest function*/
-
+/* Purpose: Prints the visual grid to the console, showing fog - of - war, hits, misses, and headers.
+* Note---> May be the simplest function
+*/

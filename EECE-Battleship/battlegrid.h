@@ -1,4 +1,4 @@
-/*This is the header filer, this defins the structure for the Battlegrid as well as any function prototypes for what exists in Battlegrid.c
+/*This is the header filer, this defines the structure for the Battlegrid as well as any function prototypes for what exists in Battlegrid.c
 more can be added here if they relate to grid mechanics just to keep things neat*/
 #ifndef BATTLEGRID_H
 #define BATTLEGRID_H
